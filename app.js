@@ -30,7 +30,7 @@ express.post("/",async (req,res)=>{
     console.log(slackBody);
     if(slackBody.event.type=="team_join"){
         await fetchCount();
-        const userProfile=slackBody.user.profile;        
+        const userProfile=slackBody.event.user;        
         const slackObj={
             count:globalCount,
             newMember:{
