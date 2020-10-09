@@ -26,12 +26,16 @@ const fetchCount=async ()=>{
       globalCount=num_members;
 }
 
-// express.post("/push",(req,res)=>{
-//     const repoBody=req.body;
-//     const branchName=repoBody
-//     console.log(repoBody);
-    
-// })
+express.post("/push",async (req,res)=>{
+    const repoBody=req.body;
+    const branchName=repoBody.ref.split("/")[2];
+    if(branchName=="hook"){
+        const commits=repoBody.commits.length;
+        const previousTotal= await (await repoRef.doc('count').get()).data().total;
+        
+        repoRef.doc('count').update({total:previousTotal+commits});
+    }    
+})
 
 express.post("/",async (req,res)=>{
     const slackBody=req.body;    
