@@ -29,20 +29,23 @@ const fetchCount=async ()=>{
       globalCount=num_members;
 }
 
-const isValidBranch=(ele,arr)=>{
-    return arr.includes(ele);
+const isValidBranch=(branchName)=>{
+    let defaultBranches=new Set();
+    const reposList= await repoRef.get();
+    reposList.forEach((each)=>{
+        defaultBranches.add(each.data().branch);
+    })
+    return defaultBranches.has(branchName);
 }
+
 
 express.post("/push",async (req,res)=>{
     const repoBody=req.body;
-    const defaultBranches= await (await repoRef.doc('branches').get()).data().default;   
-
     
     const branchName=repoBody.ref.split("/")[2];
-    if(isValidBranch(branchName,defaultBranches)){
+    if(isValidBranch(branchName)){
         const commits=repoBody.commits.length;
-        const previousTotal= await (await repoRef.doc('count').get()).data().total;
-        
+        const previousTotal= await (await repoRef.doc('count').get()).data().total;        
         repoRef.doc('count').update({total:previousTotal+commits});
     }    
 })
@@ -69,6 +72,6 @@ express.get("/",(req,res)=>{
     res.send("<h1>Wannabe Linux Power user</h1>");
 })
 
-express.listen(3000,()=>{
+express.listen(3000,async ()=>{
     console.log("Server Started at http://localhost:3000");
 })
