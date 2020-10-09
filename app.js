@@ -64,5 +64,4 @@ express.get("/",(req,res)=>{
 
 express.listen(3000,()=>{
     console.log("Server Started at http://localhost:3000");
-    console.log(process.env.SLACK_TOKEN);
 })
