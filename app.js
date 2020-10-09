@@ -29,10 +29,17 @@ const fetchCount=async ()=>{
       globalCount=num_members;
 }
 
+const isValidBranch=(ele,arr)=>{
+    return arr.includes(ele);
+}
+
 express.post("/push",async (req,res)=>{
     const repoBody=req.body;
+    const defaultBranches= await (await repoRef.doc('branches').get()).data().default;   
+
+    
     const branchName=repoBody.ref.split("/")[2];
-    if(branchName=="hook"){
+    if(isValidBranch(branchName,defaultBranches)){
         const commits=repoBody.commits.length;
         const previousTotal= await (await repoRef.doc('count').get()).data().total;
         
