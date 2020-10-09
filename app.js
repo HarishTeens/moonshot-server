@@ -13,6 +13,7 @@ firebaseAdmin.initializeApp({
   });
   
 const slackRef=firebaseAdmin.firestore().collection("slack");
+const repoRef=firebaseAdmin.firestore().collection("repos");
 
 let globalCount=0;
 
@@ -24,6 +25,13 @@ const fetchCount=async ()=>{
       } = await axios.get("https://slack.com/api/conversations.info?token=xoxb-1064409094870-1411763891026-ZWfA3czIdNlnTEbfSGrW1F5l&channel=C011WC12VK8&include_num_members=true&pretty=1");
       globalCount=num_members;
 }
+
+// express.post("/push",(req,res)=>{
+//     const repoBody=req.body;
+//     const branchName=repoBody
+//     console.log(repoBody);
+    
+// })
 
 express.post("/",async (req,res)=>{
     const slackBody=req.body;    
@@ -40,6 +48,8 @@ express.post("/",async (req,res)=>{
         slackRef.doc('info').update(slackObj);
     }
 })
+
+
 
 express.get("/",(req,res)=>{
     res.send("<h1>Wannabe Linux Power user</h1>");
