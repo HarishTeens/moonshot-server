@@ -17,6 +17,7 @@ firebaseAdmin.initializeApp({
   
 const slackRef=firebaseAdmin.firestore().collection("slack");
 const repoRef=firebaseAdmin.firestore().collection("repos");
+const p5jsRef=firebaseAdmin.firestore().collection("p5js");
 
 let globalCount=0;
 
@@ -29,13 +30,16 @@ const fetchCount=async ()=>{
       globalCount=num_members;
 }
 
-const isValidBranch=(branchName)=>{
-    let defaultBranches=new Set();
+const isValidBranch= async (branchName,fullRepoName)=>{
+    let defaultBranches=new Map();
     const reposList= await repoRef.get();
     reposList.forEach((each)=>{
-        defaultBranches.add(each.data().branch);
+        const repo=each.data();
+        defaultBranches.set(repo.owner+"/"+repo.name,repo.branch);
     })
-    return defaultBranches.has(branchName);
+    
+    return defaultBranches.get(fullRepoName) == branchName;
+    
 }
 
 
@@ -43,11 +47,14 @@ express.post("/push",async (req,res)=>{
     const repoBody=req.body;
     
     const branchName=repoBody.ref.split("/")[2];
-    if(isValidBranch(branchName)){
+    const fullRepoName=repoBody.repository.full_name;
+    if(await isValidBranch(branchName,fullRepoName)){
+        console.log("inside");
         const commits=repoBody.commits.length;
-        const previousTotal= await (await repoRef.doc('count').get()).data().total;        
-        repoRef.doc('count').update({total:previousTotal+commits});
+        const previousCount= await (await p5jsRef.doc('p5js').get()).data().count;        
+        p5jsRef.doc('p5js').update({count:previousCount+commits});
     }    
+    res.sendStatus(200);
 })
 
 express.post("/",async (req,res)=>{
@@ -72,6 +79,6 @@ express.get("/",(req,res)=>{
     res.send("<h1>Wannabe Linux Power user</h1>");
 })
 
-express.listen(3000,async ()=>{
-    console.log("Server Started at http://localhost:3000");
+express.listen(3001,async ()=>{
+    console.log("Server Started at http://localhost:300");
 })
