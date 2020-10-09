@@ -37,7 +37,7 @@ const isValidBranch= async (branchName,fullRepoName)=>{
         const repo=each.data();
         defaultBranches.set(repo.owner+"/"+repo.name,repo.branch);
     })
-    
+    console.log(defaultBranches,fullRepoName,branchName);
     return defaultBranches.get(fullRepoName) == branchName;
     
 }
@@ -53,8 +53,11 @@ express.post("/push",async (req,res)=>{
         const commits=repoBody.commits.length;
         const previousCount= await (await p5jsRef.doc('p5js').get()).data().count;        
         p5jsRef.doc('p5js').update({count:previousCount+commits});
+        res.sendStatus(202);
+    }else{
+        res.sendStatus(203);
     }    
-    res.sendStatus(200);
+    
 })
 
 express.post("/",async (req,res)=>{
@@ -79,6 +82,6 @@ express.get("/",(req,res)=>{
     res.send("<h1>Wannabe Linux Power user</h1>");
 })
 
-express.listen(3001,async ()=>{
+express.listen(3000,async ()=>{
     console.log("Server Started at http://localhost:300");
 })
