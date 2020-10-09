@@ -17,6 +17,7 @@ firebaseAdmin.initializeApp({
   
 const slackRef=firebaseAdmin.firestore().collection("slack");
 const repoRef=firebaseAdmin.firestore().collection("repos");
+const p5jsRef=firebaseAdmin.firestore().collection("p5js");
 
 let globalCount=0;
 
@@ -29,7 +30,7 @@ const fetchCount=async ()=>{
       globalCount=num_members;
 }
 
-const isValidBranch=(branchName)=>{
+const isValidBranch= async (branchName)=>{
     let defaultBranches=new Set();
     const reposList= await repoRef.get();
     reposList.forEach((each)=>{
@@ -45,8 +46,8 @@ express.post("/push",async (req,res)=>{
     const branchName=repoBody.ref.split("/")[2];
     if(isValidBranch(branchName)){
         const commits=repoBody.commits.length;
-        const previousTotal= await (await repoRef.doc('count').get()).data().total;        
-        repoRef.doc('count').update({total:previousTotal+commits});
+        const previousCount= await (await p5jsRef.doc('p5js').get()).data().count;        
+        p5jsRef.doc('p5js').update({count:previousCount+commits});
     }    
 })
 
