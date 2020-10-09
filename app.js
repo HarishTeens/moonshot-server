@@ -2,7 +2,10 @@ const express=require('express')();
 const bodyparser = require("body-parser");
 const firebaseAdmin=require('firebase-admin');
 const axios=require("axios");
+const dotenv=require("dotenv");
+
 express.use(bodyparser.json());
+dotenv.config()
 
 const serviceAccount = require("./whatisthis.json");
 
@@ -22,7 +25,7 @@ const fetchCount=async ()=>{
         data: { channel:{
           num_members
         } },
-      } = await axios.get("https://slack.com/api/conversations.info?token=xoxb-1064409094870-1411763891026-ZWfA3czIdNlnTEbfSGrW1F5l&channel=C011WC12VK8&include_num_members=true&pretty=1");
+      } = await axios.get("https://slack.com/api/conversations.info?token="+process.env.SLACK_TOKEN+"&channel=C011WC12VK8&include_num_members=true&pretty=1");
       globalCount=num_members;
 }
 
@@ -61,4 +64,5 @@ express.get("/",(req,res)=>{
 
 express.listen(3000,()=>{
     console.log("Server Started at http://localhost:3000");
+    console.log(process.env.SLACK_TOKEN);
 })
