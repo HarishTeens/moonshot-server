@@ -42,6 +42,15 @@ const isValidBranch= async (branchName,fullRepoName)=>{
     
 }
 
+const getAvatarURL=async (name)=>{
+    const headersConfig= { headers: { Authorization: `Bearer ${process.env.GITHUB_TOKEN}` } }
+    const {
+        data: { avatar_url }
+      } = await axios.get("https://api.github.com/users/"+name,headersConfig);
+      
+    return avatar_url;
+}
+
 const updateContributors=async (commits,fullRepoName)=>{
     let contributors=new Set();
     commits.map((commit)=>{
@@ -50,7 +59,7 @@ const updateContributors=async (commits,fullRepoName)=>{
     const prevContributors=await contributorsRef.get();    
 
     for(let contributor of contributors){
-        contributorsRef.doc(contributor).get().then(async (snapshot)=>{
+        contributorsRef.doc(contributor).get().then(async (snapshot)=>{            
             if(snapshot.exists){
                 const contributions=(await contributorsRef.doc(contributor).get()).data().contribution;
                 const contributionsSet=new Set();
@@ -64,7 +73,8 @@ const updateContributors=async (commits,fullRepoName)=>{
                 }
                 await contributorsRef.doc(contributor).update({contribution: contributionsArray});
             }else{
-                await contributorsRef.doc(contributor).set({contribution:[fullRepoName]});
+                const avatar_url=await getAvatarURL(contributor);
+                await contributorsRef.doc(contributor).set({contribution:[fullRepoName],avatar_url:avatar_url});
             }
         })
     }
