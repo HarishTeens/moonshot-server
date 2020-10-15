@@ -3,6 +3,7 @@ const bodyparser = require("body-parser");
 const firebaseAdmin=require('firebase-admin');
 const axios=require("axios");
 const dotenv=require("dotenv");
+const {setTimeoutUtil}=require("./helpers/rateLimiter");
 
 express.use(bodyparser.json());
 dotenv.config()
@@ -19,6 +20,7 @@ const slackRef=firebaseAdmin.firestore().collection("slack");
 const repoRef=firebaseAdmin.firestore().collection("repos");
 const p5jsRef=firebaseAdmin.firestore().collection("p5js");
 const contributorsRef=firebaseAdmin.firestore().collection("contributors");
+const colorsRef=firebaseAdmin.firestore().collection("colors");
 
 let globalCount=0;
 
@@ -28,6 +30,7 @@ const fetchCount=async ()=>{
           num_members
         } },
       } = await axios.get("https://slack.com/api/conversations.info?token="+process.env.SLACK_TOKEN+"&channel=C011WC12VK8&include_num_members=true&pretty=1");
+      
       globalCount=num_members;
 }
 
@@ -117,9 +120,13 @@ express.post("/",async (req,res)=>{
         }
         slackRef.doc('info').update(slackObj);
     }
+    res.send(200);
 })
 
 
+
+
+setTimeout(()=>setTimeoutUtil([],200,colorsRef),200);
 
 express.get("/",(req,res)=>{
     res.send("<h1>Wannabe Linux Power user</h1>");
