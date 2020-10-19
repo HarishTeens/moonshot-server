@@ -7,16 +7,16 @@ const setTimeoutUtil=async (prevProps,callInterval,colorsRef)=>{
     const [newProps,returnVal]=await fetchAndUpdateYoutubeComments(prevProps,colorsRef);
     if(returnVal==1){
         console.log("speed up");
-        callInterval=speedUp(callInterval);        
+        callInterval=speedUp(callInterval);       
         
     }else{
         console.log("speed down");
-        callInterval=speedDown(callInterval);
+        callInterval=speedDown(callInterval,colorsRef);
     }        
     setTimeout(()=>setTimeoutUtil(newProps,callInterval),callInterval)
 }
 
-const speedDown=(val)=>{
+const speedDown=(val,colorsRef)=>{
     
     if(val==rateLimits[0])
         return rateLimits[0];
@@ -26,8 +26,11 @@ const speedDown=(val)=>{
         return rateLimits[1];
     else if(val==rateLimits[3])
         return rateLimits[2];
-    else
+    else{
+        colorsRef.doc('colors').update({color1:"#183d5d"});
         return rateLimits[0];
+    }
+        
 }
 
 const speedUp=(val)=>{

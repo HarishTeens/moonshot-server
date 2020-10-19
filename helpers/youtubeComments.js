@@ -8,7 +8,7 @@ module.exports=async (prevProps,colorsRef)=>{
   }=await axios.get("https://www.googleapis.com/youtube/v3/liveChat/messages",{
       params: {
         key: process.env.GOOGLE_API_KEY,
-        part:'snippet',
+        part:'snippet,authorDetails ',
         liveChatId:process.env.LIVE_CHAT_ID
       }
     })
@@ -25,7 +25,8 @@ module.exports=async (prevProps,colorsRef)=>{
     })
     if(validCommentMessages.length>0){
       const recentColor=validCommentMessages[validCommentMessages.length-1].substring(7);
-      colorsRef.doc('colors').update({color1:recentColor});
+      if(recentColor.match("^#[a-f0-9]{6}")!=null)
+        colorsRef.doc('colors').update({color1:recentColor});
     }
     
 
