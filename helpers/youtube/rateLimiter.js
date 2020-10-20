@@ -1,11 +1,14 @@
-const fetchAndUpdateYoutubeComments=require("./youtubeComments");
+const fetchAndUpdateYoutubeComments=require("./comments");
 
 const rateLimits=[180000,60000,20000,10000]
 
-const setTimeoutUtil=async (prevProps,callInterval,colorsRef)=>{    
+const initYTComments=async (prevProps,callInterval,colorsRef)=>{    
     console.log(callInterval);
     const [newProps,returnVal]=await fetchAndUpdateYoutubeComments(prevProps,colorsRef);
-    if(returnVal==1){
+    if(returnVal==-1){
+        console.log("Stopping Youtube Processes...");
+        return;
+    }else if(returnVal==1){
         console.log("speed up");
         callInterval=speedUp(callInterval);       
         
@@ -16,8 +19,7 @@ const setTimeoutUtil=async (prevProps,callInterval,colorsRef)=>{
     setTimeout(()=>setTimeoutUtil(newProps,callInterval,colorsRef),callInterval)
 }
 
-const speedDown=(val,colorsRef)=>{
-    
+const speedDown=(val,colorsRef)=>{    
     if(val==rateLimits[0])
         return rateLimits[0];
     else if(val==rateLimits[1]){
@@ -47,7 +49,7 @@ const speedUp=(val)=>{
 }
 
 module.exports={
-    setTimeoutUtil,
+    initYTComments,
     speedDown,
     speedUp
 }

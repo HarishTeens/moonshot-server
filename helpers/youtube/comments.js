@@ -1,23 +1,18 @@
 const axios=require("axios");
 
 module.exports=async (prevProps,colorsRef)=>{
-  const {
-      data: {
-          items:commentItems
-      }
-  }=await axios.get("https://www.googleapis.com/youtube/v3/liveChat/messages",{
+  try {
+    const {
+        data: {
+            items:commentItems
+        }
+    }=await axios.get("https://www.googleapis.com/youtube/v3/liveChat/messages",{
       params: {
         key: process.env.GOOGLE_API_KEY,
         part:'snippet,authorDetails ',
         liveChatId:process.env.LIVE_CHAT_ID
       }
     })
-  //   const curTime=new Date();
-  //   const timeDiff=30000;
-  //   const allCommentMessages=commentItems.filter((each)=>{
-  //     const messageTime=new Date(each.snippet.publishedAt);
-  //     return curTime-messageTime<timeDiff
-  //   })
     const allCommentMessages=commentItems.map(each=>each.snippet.textMessageDetails.messageText);
     console.log(allCommentMessages);
     const validCommentMessages=allCommentMessages.filter(each=>{
@@ -35,12 +30,15 @@ module.exports=async (prevProps,colorsRef)=>{
           
       }
     }   
-    //send it to firebase
-    
-  if(prevProps==lastValidColor){
-      return [lastValidColor,0];
-  }else{
-      return [lastValidColor,1];
+              
+    if(prevProps==lastValidColor){
+        return [lastValidColor,0];
+    }else{
+        return [lastValidColor,1];
+    }
+  } catch (error) {
+    //In case of an Invalid LIVE Chat ID
+    console.log(error.message);
+    return ["",-1];
   }
-
 }

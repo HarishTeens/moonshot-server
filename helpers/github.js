@@ -1,6 +1,6 @@
 const axios=require("axios");
 
-const isValidBranch= async (branchName,fullRepoName)=>{
+const isValidBranch= async (branchName,fullRepoName,repoRef)=>{
     let defaultBranches=new Map();
     const reposList= await repoRef.get();
     reposList.forEach((each)=>{
@@ -20,12 +20,11 @@ const getAvatarURL=async (name)=>{
     return avatar_url;
 }
 
-const updateContributors=async (commits,fullRepoName)=>{
+const updateContributors=async (commits,fullRepoName,contributorsRef)=>{
     let contributors=new Set();
     commits.map((commit)=>{
         contributors.add(commit.author.username);
     })
-    const prevContributors=await contributorsRef.get();    
 
     for(let contributor of contributors){
         contributorsRef.doc(contributor).get().then(async (snapshot)=>{            
@@ -46,12 +45,11 @@ const updateContributors=async (commits,fullRepoName)=>{
                 await contributorsRef.doc(contributor).set({contribution:[fullRepoName],avatar_url:avatar_url});
             }
         })
-    }    
-    
+    }
 }
 
 
-export default {
+module.exports={
     isValidBranch,
     getAvatarURL,
     updateContributors
