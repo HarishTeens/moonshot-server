@@ -20,16 +20,16 @@ const speedDown=(val,colorsRef)=>{
     
     if(val==rateLimits[0])
         return rateLimits[0];
-    else if(val==rateLimits[1])
+    else if(val==rateLimits[1]){
+        colorsRef.doc('colors').update({color1:"#183d5d"});
         return rateLimits[0];
+    }        
     else if(val==rateLimits[2])
         return rateLimits[1];
     else if(val==rateLimits[3])
         return rateLimits[2];
-    else{
-        colorsRef.doc('colors').update({color1:"#183d5d"});
+    else
         return rateLimits[0];
-    }
         
 }
 
