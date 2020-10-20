@@ -55,7 +55,7 @@ express.post("/push",async (req,res)=>{
 express.post("/",async (req,res)=>{
     const slackBody=req.body;    
     if(slackBody.event.type=="team_join"){
-        const totalMembers=await slackHelpers.fetchSlackCount();
+        const totalMembers=await slackHelpers.fetchCount();
         const userProfile=slackBody.event.user;        
         const slackObj={
             count:totalMembers,
