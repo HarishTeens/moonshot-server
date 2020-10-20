@@ -126,7 +126,7 @@ express.post("/",async (req,res)=>{
 
 
 
-setTimeout(()=>setTimeoutUtil([],200,colorsRef),200);
+setTimeout(()=>setTimeoutUtil([],10000,colorsRef),200);
 
 express.get("/",(req,res)=>{
     res.send("<h1>Wannabe Linux Power user</h1>");

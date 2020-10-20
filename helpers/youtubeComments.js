@@ -23,19 +23,24 @@ module.exports=async (prevProps,colorsRef)=>{
     const validCommentMessages=allCommentMessages.filter(each=>{
       return each.substring(0,6)=="-color"
     })
-    if(validCommentMessages.length>0){
-      const recentColor=validCommentMessages[validCommentMessages.length-1].substring(7);
-      if(recentColor.match("^#[a-f0-9]{6}")!=null)
-        colorsRef.doc('colors').update({color1:recentColor});
-    }
-    
-
+    let lastValidColor;
+    if(validCommentMessages.length>0){      
+      for(let i=validCommentMessages.length-1;i>=0;--i){
+        if(validCommentMessages[i].substring(7).match("^#[a-fA-F0-9]{6}")){
+          console.log(validCommentMessages[i].substring(7));
+          colorsRef.doc('colors').update({color1:validCommentMessages[i].substring(7)});
+          lastValidColor=validCommentMessages[i].substring(7);
+          break;
+        }
+          
+      }
+    }   
     //send it to firebase
     
-  if(prevProps[prevProps.length-1]==validCommentMessages[validCommentMessages.length-1]){
-      return [validCommentMessages,0];
+  if(prevProps==lastValidColor){
+      return [lastValidColor,0];
   }else{
-      return [validCommentMessages,1];
+      return [lastValidColor,1];
   }
 
 }
