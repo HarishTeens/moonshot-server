@@ -16,7 +16,7 @@ const initYTComments=async (prevProps,callInterval,colorsRef)=>{
         console.log("speed down");
         callInterval=speedDown(callInterval,colorsRef);
     }        
-    setTimeout(()=>setTimeoutUtil(newProps,callInterval,colorsRef),callInterval)
+    setTimeout(()=>initYTComments(newProps,callInterval,colorsRef),callInterval)
 }
 
 const speedDown=(val,colorsRef)=>{    
