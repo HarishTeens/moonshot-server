@@ -28,7 +28,7 @@ module.exports=async (prevProps,colorsRef)=>{
       }
     }   
               
-    if(prevProps==lastValidColor){
+    if(lastValidColor==undefined|| prevProps==lastValidColor){
         return [lastValidColor,0];
     }else{
         console.log(lastValidColor);

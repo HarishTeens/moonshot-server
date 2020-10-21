@@ -1,6 +1,6 @@
 const fetchAndUpdateYoutubeComments=require("./comments");
 
-const rateLimits=[18000,6000,2000,1000]
+const rateLimits=[180000,60000,20000,10000]
 
 const initYTComments=async (prevProps,callInterval,colorsRef)=>{    
     console.log(callInterval);
