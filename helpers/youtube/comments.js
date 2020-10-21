@@ -21,19 +21,18 @@ module.exports=async (prevProps,colorsRef)=>{
     let lastValidColor;
     if(validCommentMessages.length>0){      
       for(let i=validCommentMessages.length-1;i>=0;--i){
-        if(validCommentMessages[i].substring(7).match("^#[a-fA-F0-9]{6}")){
-          console.log(validCommentMessages[i].substring(7));
-          colorsRef.doc('colors').update({color1:validCommentMessages[i].substring(7)});
+        if(validCommentMessages[i].substring(7).match("^#[a-fA-F0-9]{6}")){          
           lastValidColor=validCommentMessages[i].substring(7);
           break;
-        }
-          
+        }          
       }
     }   
               
     if(prevProps==lastValidColor){
         return [lastValidColor,0];
     }else{
+        console.log(lastValidColor);
+        colorsRef.doc('colors').update({color1:lastValidColor});
         return [lastValidColor,1];
     }
   } catch (error) {
